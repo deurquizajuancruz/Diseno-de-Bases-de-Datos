@@ -14,6 +14,7 @@ PROFESOR-CURSO = (DNI, Cod_Curso, Fecha_Desde, Fecha_Hasta)
 1
 Listar DNI, legajo y apellido y nombre de todos los alumnos que tengan año ingreso inferior a 2014.
 */
+
 SELECT p.DNI, a.legajo, p.Apellido, p.Nombre
 FROM Persona p INNER JOIN Alumno a ON (a.DNI = p.DNI)
 WHERE (a.Año_Ingreso < 2014)
@@ -39,7 +40,7 @@ SELECT p.DNI, p.Apellido, p.Nombre, p.Genero, p.Fecha_Nacimiento
 FROM Persona p INNER JOIN Alumno a ON (a.DNI = p.DNI)
 INNER JOIN ALUMNO-CURSO ac ON (ac.DNI = a.DNI)
 INNER JOIN Curso c ON (c.Cod_Curso = ac.Cod_Curso)
-WHERE (c.nombre = 'Diseño de Bases de Datos') AND YEAR(ac.Año) = 2019
+WHERE (c.nombre = 'Diseño de Bases de Datos' AND YEAR(ac.Año)) = 2019
 
 /*
 4 
@@ -91,13 +92,13 @@ HAVING COUNT(*) => ALL
 FROM ALUMNO-CURSO ac
 WHERE YEAR(ac.Año) = 2019)
 UNION
-SELECT c.Nombre, c.Descripción
+(SELECT c.Nombre, c.Descripción
 FROM CURSO c INNER JOIN ALUMNO-CURSO ac ON (ac.Cod_Curso = c.Cod_Curso)
 GROUP BY c.Cod_Curso, c.Nombre, c.Descripción
 HAVING COUNT(*) <= ALL
 (SELECT COUNT(*)
 FROM ALUMNO-CURSO ac
-WHERE YEAR(ac.Año) = 2019)
+WHERE YEAR(ac.Año) = 2019))
 
 /*
 8

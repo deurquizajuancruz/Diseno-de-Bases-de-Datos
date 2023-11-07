@@ -72,28 +72,27 @@ GROUP BY idProducto, nombreP, descripcion, precio
 Listar nombre, apellido, DNI, teléfono y dirección de clientes que compraron los productos con nombre ‘prod1’ y ‘prod2’ pero nunca compraron el producto con nombre ‘prod3’.
 */
 
-(SELECT nombre, apellido, DNI, telefono, direccion
-FROM Cliente NATURAL JOIN Factura
-NATURAL JOIN Detalle
-NATURAL JOIN Producto
-WHERE (nombreP='prod1')
-INTERSECT
 SELECT nombre, apellido, DNI, telefono, direccion
 FROM Cliente NATURAL JOIN Factura
 NATURAL JOIN Detalle
 NATURAL JOIN Producto
-WHERE (nombreP='prod2'))
-EXCEPT
-(SELECT nombre, apellido, DNI, telefono, direccion
+WHERE (nombreP='prod1' AND idCliente IN 
+(SELECT idCliente
 FROM Cliente NATURAL JOIN Factura
 NATURAL JOIN Detalle
 NATURAL JOIN Producto
-WHERE (nombreP='prod3'))
+WHERE (nombreP='prod2')) AND idCliente NOT IN 
+(SELECT idCliente
+FROM Cliente NATURAL JOIN Factura
+NATURAL JOIN Detalle
+NATURAL JOIN Producto
+WHERE (nombreP='prod3')))
 
 /*
 7
 Listar nroTicket, total, fecha, hora y DNI del cliente, de aquellas facturas donde se haya comprado el producto ‘prod38’ o la factura tenga fecha de 2019.
 */
+
 SELECT nrotTicket, total, fecha, hora, DNI
 FROM Cliente NATURAL JOIN Factura
 NATURAL JOIN Detalle
@@ -108,6 +107,7 @@ WHERE YEAR(fecha) = 2019
 8
 Agregar un cliente con los siguientes datos: nombre:’Jorge Luis’, apellido:’Castor’, DNI:40578999, teléfono:221-4400789, dirección:’11 entre 500 y 501 nro:2587’ y el id de cliente: 500002. Se supone que el idCliente 500002 no existe.
 */
+
 INSERT INTO Cliente (idCliente, nombre, apellido, DNI, telefono, direccion) VALUES (500002, 'Jorge Luis', 'Castor', 40578999, 221-4400789, '11 entre 500 y 501 nro:2587')
 
 /*
@@ -132,4 +132,4 @@ Listar DNI, apellido y nombre de clientes donde el monto total comprado, teniend
 SELECT DNI, apellido, nombre
 FROM Cliente NATURAL JOIN Factura
 GROUP BY DNI, apellido, nombre
-HAVING BY (SUM)total>10000000
+HAVING (SUM)total>10000000

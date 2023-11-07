@@ -15,13 +15,12 @@ SELECT DISTINCT a.especie, a.años, a.calle, a.nro, l.nombreL
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
 INNER JOIN Poda pod ON (pod.nroArbol = a.nroArbol)
 INNER JOIN Podador p ON (p.DNI = pod.DNI)
-WHERE (p.nombre = 'Juan') AND (p.apellido = 'Perez')
-INTERSECT
-SELECT DISTINCT a.especie, a.años, a.calle, a.nro, l.nombreL
+WHERE (p.nombre = 'Juan' AND p.apellido = 'Perez' AND a.nroArbol IN
+(SELECT a.nroArbol
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
 NATURAL JOIN Poda pod
 INNER JOIN Podador p ON (p.DNI = pod.DNI)
-WHERE (p.nombre = 'Jose') AND (p.apellido = 'Garcia')
+WHERE (p.nombre = 'Jose' AND p.apellido = 'Garcia')))
 
 /*
 2
@@ -40,10 +39,9 @@ Listar especie, años, calle, nro y localidad de árboles que no fueron podados 
 
 SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
-WHERE a.nroArbol NOT IN (
-    SELECT a.nroArbol
-    FROM Arbol a INNER JOIN Poda p ON (p.nroArbol = a.nroArbol)
-)
+WHERE a.nroArbol NOT IN 
+(SELECT a.nroArbol
+FROM Arbol a INNER JOIN Poda p ON (p.nroArbol = a.nroArbol))
 
 /*
 4
@@ -53,12 +51,11 @@ Reportar especie, años, calle, nro y localidad de árboles que fueron podados d
 SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
 INNER JOIN Poda p ON (p.nroArbol = a.nroArbol)
-WHERE YEAR(p.fecha) = 2017
-EXCEPT
-SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
+WHERE (YEAR(p.fecha) = 2017 AND a.nroArbol NOT IN 
+(SELECT a.nroArbol
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
 INNER JOIN Poda p ON (p.nroArbol = a.nroArbol)
-WHERE YEAR(p.fecha) = 2018
+WHERE (YEAR(p.fecha) = 2018)))
 
 /*
 5
@@ -96,11 +93,10 @@ Listar especie de árboles que se encuentren en la localidad de ‘La Plata’ y
 
 SELECT a.especie
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
-WHERE (l.nombreL = 'La Plata')
-INTERSECT
-(SELECT a.especie
+WHERE (l.nombreL = 'La Plata' AND a.nroArbol IN 
+(SELECT a.nroArbol
 FROM Arbol a INNER JOIN Localidad l ON (a.codigoPostal = l.CodigoPostal)
-WHERE (l.nombreL = 'Salta'))
+WHERE (l.nombreL = 'Salta')))
 
 /*
 8

@@ -59,10 +59,9 @@ Listar nombre de equipo y datos personales de líderes de equipos que no tengan 
 
 SELECT e.DNI, e.nombre, e.apellido, e.telefono, e.direccion, eq.nombreE
 FROM Empleado e INNER JOIN Equipo eq ON (eq.DNILider = e.DNI)
-WHERE (eq.descripcionTecnologias = 'Java') AND eq.codEquipo NOT IN (
-    SELECT ee.codEquipo
-    FROM Empleado_Equipo ee
-)
+WHERE (eq.descripcionTecnologias = 'Java') AND eq.codEquipo NOT IN 
+(SELECT ee.codEquipo
+FROM Empleado_Equipo ee)
 
 /*
 6

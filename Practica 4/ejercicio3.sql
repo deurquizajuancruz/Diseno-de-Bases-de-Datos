@@ -14,11 +14,9 @@ Reportar nombre y anioFundacion de aquellos clubes de la ciudad de La Plata que 
 
 SELECT cl.nombre, cl.anioFundacion
 FROM Club cl INNER JOIN Ciudad c ON (c.codigoCiudad = cl.codigoCiudad)
-WHERE (c.nombre = 'La Plata')
-EXCEPT 
+WHERE (c.nombre = 'La Plata' AND cl.codigoCiudad NOT IN 
 (SELECT cl.nombre, cl.anioFundacion
-FROM Club cl INNER JOIN Estadio e ON (cl.codigoClub = e.codigoClub)
-)
+FROM Club cl INNER JOIN Estadio e ON (cl.codigoClub = e.codigoClub)))
 
 /*
 2
@@ -27,12 +25,12 @@ Listar nombre de los clubes que no hayan tenido ni tengan jugadores de la ciudad
 
 SELECT cl.nombre
 FROM Club cl 
-EXCEPT
+WHERE (cl.codigoClub NOT IN
 (SELECT cl.nombre 
 FROM Club cl INNER JOIN ClubJugador clubJ ON (cl.codigoClub = clubJ.codigoClub)
 INNER JOIN Jugador j ON (j.DNI = clubJ.DNI)
 INNER JOIN Ciudad c ON (j.codigoCiudad = c.codigoCiudad)
-WHERE (c.nombre = 'Berisso'))
+WHERE (c.nombre = 'Berisso')))
 
 /*
 3
@@ -63,7 +61,7 @@ Mostrar para cada club, nombre de club y la edad promedio de los jugadores que j
 SELECT cl.nombre, AVG(j.edad)
 FROM Club cl INNER JOIN ClubJugador clubJ ON (cl.codigoClub = clubJ.codigoClub)
 INNER JOIN Jugador j ON (clubJ.DNI = j.DNI)
-WHERE (clubJ.desde<='5/11/2023') AND (clubJ.hasta>='5/11/2023')
+WHERE (clubJ.desde<='05/11/2023') AND (clubJ.hasta>='05/11/2023')
 GROUP BY cl.codigoClub, cl.nombre
 
 /*
@@ -82,12 +80,12 @@ Mostrar el nombre de los clubes que nunca hayan tenido jugadores de la ciudad de
 
 SELECT cl.nombre
 FROM Club cl
-EXCEPT
+WHERE (cl.codigoClub NOT IN
 (SELECT cl.nombre
 FROM Club cl INNER JOIN ClubJugador clubJ ON (clubJ.codigoClub = cl.codigoClub)
 INNER JOIN Jugador j ON (clubJ.DNI = j.DNI)
 INNER JOIN Ciudad ciu ON (ciu.codigoCiudad = j.codigoCiudad)
-WHERE (ciu.nombre = 'Mar del Plata'))
+WHERE (ciu.nombre = 'Mar del Plata')))
 
 
 /*

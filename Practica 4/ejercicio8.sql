@@ -25,12 +25,11 @@ Reportar nombre y descripción de equipos que solo se hayan inscripto en torneos
 SELECT e.nombreE, e.descripcionE
 FROM Equipo e INNER JOIN Inscripcion ins ON (e.codigoE = ins.codigoE)
 INNER JOIN TorneoPesca tp ON (tp.codTorneo = ins.codTorneo)
-WHERE (YEAR(tp.fecha) = 2018)
-EXCEPT
-(SELECT e.nombreE, e.descripcionE
+WHERE (YEAR(tp.fecha) = 2018 AND e.codigoE NOT IN
+(SELECT e.codigoE
 FROM Equipo e INNER JOIN Inscripcion ins ON (e.codigoE = ins.codigoE)
 INNER JOIN TorneoPesca tp ON (tp.codTorneo = ins.codTorneo)
-WHERE (YEAR(tp.fecha) <> 2018))
+WHERE (YEAR(tp.fecha) <> 2018)))
 
 /*
 3

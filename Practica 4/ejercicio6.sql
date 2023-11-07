@@ -23,13 +23,12 @@ Listar nombre, stock, precio de repuesto que participaron en reparaciones durant
 SELECT r.nombre, r.stock, r.precio
 FROM Repuesto r INNER JOIN RepuestoReparacion rr ON (rr.codRep = r.codRep)
 INNER JOIN Reparación rep ON (rep.nroReparac = rr.nroReparac)
-WHERE YEAR(rep.fecha) = 2019 AND r.codRep NOT IN (
-SELECT r.codRep
+WHERE YEAR(rep.fecha) = 2019 AND r.codRep NOT IN 
+(SELECT r.codRep
 FROM Repuesto r INNER JOIN RepuestoReparacion rr ON (rr.codRep = r.codRep)
 INNER JOIN Reparación rep ON (rep.nroReparac = rr.nroReparac)
 INNER JOIN Técnico t ON (rep.codTec = t.codTec)
-WHERE (t.nombre = 'José Gonzalez') 
-)
+WHERE (t.nombre = 'José Gonzalez'))
 
 /*
 3
@@ -38,10 +37,9 @@ Listar el nombre, especialidad de técnicos que no participaron en ninguna repar
 
 SELECT t.nombre, t.especialidad
 FROM Técnico t
-WHERE t.codTec NOT IN (
-    SELECT t.codTec
-    FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec)
-)
+WHERE t.codTec NOT IN 
+(SELECT t.codTec
+FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec))
 ORDER BY t.nombre
 
 /*
@@ -51,11 +49,10 @@ Listar el nombre, especialidad de técnicos solo participaron en reparaciones du
 
 SELECT t.nombre, t.especialidad
 FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec)
-WHERE YEAR(r.fecha) = 2018
-EXCEPT
-(SELECT t.nombre, t.especialidad
+WHERE (YEAR(r.fecha) = 2018 AND t.codTec NOT IN 
+(SELECT t.codTec
 FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec)
-WHERE YEAR(r.fecha) <> 2018)
+WHERE (YEAR(r.fecha) <> 2018)))
 
 /*
 5
@@ -75,20 +72,18 @@ Listar nombre y especialidad del técnico con mayor cantidad de reparaciones rea
 SELECT t.nombre, t.especialidad
 FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec)
 GROUP BY t.codTec, t.nombre, t.especialidad
-HAVING COUNT(*) => ALL (
-    SELECT COUNT(*)
-    FROM Reparación r
-    GROUP BY r.codTec
-)
+HAVING COUNT(*) => ALL 
+(SELECT COUNT(*)
+FROM Reparación r
+GROUP BY r.codTec)
 UNION
-SELECT t.nombre, t.especialidad
+(SELECT t.nombre, t.especialidad
 FROM Técnico t INNER JOIN Reparación r ON (r.codTec = t.codTec)
 GROUP BY t.codTec, t.nombre, t.especialidad
-HAVING COUNT(*) <= SOME (
-    SELECT COUNT(*)
-    FROM Reparación r
-    GROUP BY r.codTec
-)
+HAVING COUNT(*) <= SOME 
+(SELECT COUNT(*)
+FROM Reparación r
+GROUP BY r.codTec))
 
 /*
 7
@@ -97,11 +92,10 @@ Listar nombre, stock y precio de todos los repuestos con stock mayor a 0 y que d
 
 SELECT rep.nombre, rep.stock, rep.precio
 FROM Repuesto rep
-WHERE (rep.stock > 0) AND rep.codRep NOT IN (
-    SELECT rr.codRep
-    FROM RepuestoReparacion rr INNER JOIN Reparación r ON (rr.nroReparac = r.nroReparac)
-    WHERE (r.precio_total > 10000)
-)
+WHERE (rep.stock > 0 AND rep.codRep NOT IN 
+(SELECT rr.codRep
+FROM RepuestoReparacion rr INNER JOIN Reparación r ON (rr.nroReparac = r.nroReparac)
+WHERE (r.precio_total > 10000)))
 
 /*
 8

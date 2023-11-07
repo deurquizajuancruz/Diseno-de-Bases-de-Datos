@@ -13,11 +13,10 @@ Listar DNI, nombre, apellido, dirección y email de integrantes nacidos entre 19
 
 SELECT i.DNI, i.nombre, i.apellido, i.email 
 FROM Integrante i 
-WHERE (YEAR(i.fecha_nacimiento) BETWEEN 1980 AND 1990) AND i.DNI IN (
-    SELECT i.DNI
-    FROM Integrante i INNER JOIN Recital r ON (i.codigoB = r.codigoB)
-    WHERE (YEAR(r.fecha) = 2018)
-)
+WHERE (YEAR(i.fecha_nacimiento) BETWEEN 1980 AND 1990) AND i.DNI IN 
+(SELECT i.DNI
+FROM Integrante i INNER JOIN Recital r ON (i.codigoB = r.codigoB)
+WHERE (YEAR(r.fecha) = 2018))
 
 /*
 2
@@ -26,11 +25,10 @@ Reportar nombre, género musical y año de creación de bandas que hayan realiza
 
 SELECT b.nombreBanda, b.genero_musical, b.año_creacion
 FROM Banda b INNER JOIN Recital r ON (b.codigoB = r.codigoB)
-WHERE (YEAR(r.fecha) = 2018) AND b.codigoB NOT IN (
-    SELECT b.nombreBanda, b.genero_musical, b.año_creacion
-    FROM Banda b INNER JOIN Recital r ON (b.codigoB = r.codigoB)
-    WHERE (YEAR(r.fecha) = 2017)
-)
+WHERE (YEAR(r.fecha) = 2018) AND b.codigoB NOT IN 
+(SELECT b.codigoB
+FROM Banda b INNER JOIN Recital r ON (b.codigoB = r.codigoB)
+WHERE (YEAR(r.fecha) = 2017))
 
 /*
 3
@@ -75,12 +73,11 @@ Listar nombre de escenario, ubicación y descripción de escenarios que solo tuv
 SELECT e.nombre_escenario, e.ubicación, e.descripción
 FROM Escenario e INNER JOIN Recital r ON (e.nroEscenario = r.nroEscenario)
 INNER JOIN Banda b ON (r.codigoB = b.codigoB)
-WHERE (b.genero_musical = 'Rock and roll')
-EXCEPT
-(SELECT e.nombre_escenario, e.ubicación, e.descripción
+WHERE (b.genero_musical = 'Rock and roll' AND e.nroEscenario NOT IN
+(SELECT e.nroEscenario
 FROM Escenario e INNER JOIN Recital r ON (e.nroEscenario = r.nroEscenario)
 INNER JOIN Banda b ON (r.codigoB = b.codigoB)
-WHERE (b.genero_musical <> 'Rock and roll'))
+WHERE (b.genero_musical <> 'Rock and roll')))
 ORDER BY e.nombre_escenario
 
 /*

@@ -63,6 +63,7 @@ FROM Cine c NATURAL JOIN Sala s
 WHERE (s.capacidad > 300)
 
 /*
+6
 Agregar un cine con nombre cine ‘Cine Ricardo Darin’, dirección: ‘calle 2 nro 1900, La Plata’ e idCine: 5000, asuma que no existe dicho id.
 */
 

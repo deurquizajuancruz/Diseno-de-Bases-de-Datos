@@ -84,8 +84,7 @@ FROM Podador pod INNER JOIN Poda p ON (pod.DNI = p.DNI)
 INNER JOIN Arbol a ON (a.nroArbol = p.nroArbol)
 WHERE (a.especie = 'Coníferas')
 EXCEPT
-(
-SELECT pod.DNI, pod.apellido, pod.nombre, pod.telefono, pod.fnac
+(SELECT pod.DNI, pod.apellido, pod.nombre, pod.telefono, pod.fnac
 FROM Podador pod INNER JOIN Poda p ON (pod.DNI = p.DNI)
 INNER JOIN Arbol a ON (a.nroArbol = p.nroArbol)
 WHERE (a.especie <> 'Coníferas'))

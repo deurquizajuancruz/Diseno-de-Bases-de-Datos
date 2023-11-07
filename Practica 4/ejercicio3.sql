@@ -99,7 +99,7 @@ SELECT j.nombre, j.apellido
 FROM Jugador j INNER JOIN ClubJugador clubJ (clubJ.DNI = j.DNI)
 INNER JOIN Club cl (clubJ.codigoClub = cl.codigoClub)
 GROUP BY j.DNI, j.nombre, j.apellido
-WHERE (COUNT(DISTINCT club.codigoClub)) = (SELECT COUNT(*) FROM Club)
+HAVING (COUNT(DISTINCT club.codigoClub)) = (SELECT COUNT(*) FROM Club)
 
 /*
 9
